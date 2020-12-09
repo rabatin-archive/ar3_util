@@ -1,0 +1,14 @@
+1enviornment_var_data_root: interpolated_test_var_123PLusTwo
+aenviornment_var_data_root: interpolated_test_var_123PLusTwo
+cache_dir: D:/Data/cache
+credentials_root: interpolated_test_var_123PLusTwo/Credentials
+db_driver: postgres
+db_driver_credentials:
+  credentials_file: interpolated_test_var_123456/server_connections/postgres_credentials.json
+  database_name: abcd
+  host: localhost
+  random: interpolated_test_var_12345
+email_export_root: D:/Data/export
+enviornment_var_data_root: interpolated_test_var_123PLusTwo
+enviornment_var_data_root1: interpolated_test_var_123
+whoosh_index_root: D:/Data/search_index
