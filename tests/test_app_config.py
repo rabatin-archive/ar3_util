@@ -47,13 +47,14 @@ class TestAppConfig(TestCase):
         raise RuntimeError(f"{t} is not as expected {test['expected']}")
 
   def test_load_from_file_and_parse(self):
-    os.environ['test_var_123'] = 'interpolated_test_var_123'
-    os.environ['test_var_12345'] = 'interpolated_test_var_12345'
-    os.environ['test_var_123456'] = 'interpolated_test_var_123456'
+    additional_environ = {}
+    additional_environ['test_var_123'] = 'interpolated_test_var_123'
+    additional_environ['test_var_12345'] = 'interpolated_test_var_12345'
+    additional_environ['test_var_123456'] = 'interpolated_test_var_123456'
     fn = Path('data/test_config_1.yaml')
     compare_fn = Path('data/compare_test_config_1.yaml')
 
-    appconfig = ar3_util.app_config.AppConfig.create_appconfig_from_configfile(fn)
+    appconfig = ar3_util.app_config.AppConfig.create_appconfig_from_configfile(fn, additional_environ)
 
     # Only use this when re-creating new test data
     # with open(compare_fn, 'w') as f:

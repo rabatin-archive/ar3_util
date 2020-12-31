@@ -116,13 +116,16 @@ class AppConfig:
         f'Needs ordered dictionary by default when leading dicts from YAML')
 
   @staticmethod
-  def _parse_yaml_configfile(config_file: Path):
+  def _parse_yaml_configfile(config_file: Path, environment_vars:dict):
+    env_dict = os.environ
+    for k,v in environment_vars.items():
+      env_dict[k] = v
     AppConfig._verify_python_version()
     with open(config_file) as f:
       data = yaml.load(f, Loader=yaml.FullLoader)
     new_data, unused_replace_token_dict = \
       AppConfig._iterate_dict_pairs(d=data,
-                                    token_dict=os.environ,
+                                    token_dict=env_dict,
                                     token_start_id=AppConfig.ENV_TOKEN_START,
                                     token_end_id=AppConfig.ENV_TOKEN_END)
     new_data2, unused_replace_token_dict = \
@@ -133,8 +136,8 @@ class AppConfig:
     return new_data2
 
   @staticmethod
-  def create_appconfig_from_configfile(yaml_configfile: Path):
-    return AppConfig(AppConfig._parse_yaml_configfile(yaml_configfile))
+  def create_appconfig_from_configfile(yaml_configfile: Path, environment_vars:dict):
+    return AppConfig(AppConfig._parse_yaml_configfile(yaml_configfile,environment_vars))
 
   def __init__(self, config_data_dict: dict):
     self.data = config_data_dict
