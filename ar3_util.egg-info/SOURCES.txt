@@ -1,7 +1,10 @@
 README.txt
+pyproject.toml
 setup.py
 ar3_util/__init__.py
 ar3_util/app_config.py
+ar3_util/cl_command.py
+ar3_util/standard_logger.py
 ar3_util.egg-info/PKG-INFO
 ar3_util.egg-info/SOURCES.txt
 ar3_util.egg-info/dependency_links.txt
