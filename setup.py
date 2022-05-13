@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
   name='ar3_util',
-  version='0.2',
+  version='0.3',
   packages=['tests', 'ar3_util'],
   url='www.rabatin.com',
   license='MIT',
