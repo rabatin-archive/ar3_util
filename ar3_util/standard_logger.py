@@ -3,9 +3,25 @@ import logging.handlers
 import platform
 import sys
 
-def apply_logger_handler(screenoutput:bool, logger_name:str, logfilename:str):
+def logging_level_string_to_level(logging_level_as_str:str):
+  nameToLevel = {
+    'CRITICAL': logging.CRITICAL,
+    'FATAL': logging.FATAL,
+    'ERROR': logging.ERROR,
+    'WARN': logging.WARNING,
+    'WARNING': logging.WARNING,
+    'INFO': logging.INFO,
+    'DEBUG': logging.DEBUG,
+    'NOTSET': logging.NOTSET
+  }
+  if logging_level_as_str not in nameToLevel:
+    raise ValueError(f'Invalid logging level code: {logging_level_as_str}')
+  return nameToLevel[logging_level_as_str]
+
+
+def apply_logger_handler(screenoutput:bool, logger_name:str, logfilename:str, logging_level:int = logging.DEBUG):
   logger = logging.getLogger(logger_name)
-  logger.setLevel(logging.DEBUG)
+  logger.setLevel(logging_level)
 
   fulllogfilename = logfilename
 
