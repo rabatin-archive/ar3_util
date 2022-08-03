@@ -1,6 +1,68 @@
-from pathlib import Path
+from pathlib import Path, PosixPath, WindowsPath
+
 import datetime
 import json
+
+class ComplexEncoder(json.JSONEncoder):
+  def default(self, obj):
+    if isinstance(obj, PosixPath):
+      return str(obj)
+    if isinstance(obj, WindowsPath):
+      return str(obj)
+    if isinstance(obj, datetime.datetime):
+      return obj.isoformat()
+    if isinstance(obj, datetime.date):
+      return obj.isoformat()
+    return json.JSONEncoder.default(self, obj)
+
+def dated_dir_is_closed(pathname:Path) -> bool:
+  control_filename = pathname / DatedDirectories.DIRINFO_FILENAME
+  if not control_filename.is_file():
+    raise RuntimeError(f'Expected DateDirectory control file in {pathname}')
+  with open(control_filename, 'r') as f:
+    controldata = json.load(f)
+  return controldata['is_complete']
+
+def set_dir_to_open(pathname:Path, comment:str) -> None:
+  control_filename = pathname / DatedDirectories.DIRINFO_FILENAME
+  if is_dated_dir(pathname):
+    with open(control_filename, 'r') as f:
+      controldata = json.load(f)
+    controldata['is_complete'] = False
+    controldata['comment'] = comment
+  else:
+    controldata = {
+      'info': 'This is a managed Data Directory',
+      'comment': 'There was no create event for this path. Ignore the create Timestamp.',
+      'created_date': datetime.datetime.now().isoformat(),
+      'comment':comment,
+      'is_complete': False
+    }
+  with open(control_filename, 'w') as f:
+    json.dump(controldata, f, indent=2, cls=ComplexEncoder)
+
+
+
+def is_dated_dir(pathname:Path):
+  control_filename = pathname / DatedDirectories.DIRINFO_FILENAME
+  is_dd=False
+  if control_filename.is_file():
+    is_dd=True
+  return is_dd
+
+
+def is_dated_dir_and_closed(pathname:Path):
+  if not is_dated_dir(pathname):
+    return False
+  if not dated_dir_is_closed(pathname):
+    return False
+  return True
+
+
+def sort_dd_paths_by_date(dd_pathlist:list):
+  dd_pathlist.sort(key= lambda x: DatedDirectories.string_to_datetime(str(x.name)))
+  return dd_pathlist
+
 
 
 class DatedDirectories:
