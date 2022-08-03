@@ -1,0 +1,51 @@
+# Global Merkur Configuration file
+# Copyright Arthur Rabatin (arthur@rabatin.com)
+
+DROPBOX = '<#DROPBOX#>'
+SYSTEM_STATUS_MARKER = 'prod'
+MERKUR_DATA_ROOT = '/mnt/data/<?SYSTEM_STATUS_MARKER?>.merkur'
+MERKUR_DATA_ROOT2 = '<?MERKUR_DATA_ROOT?>.2'
+MERKUR_DATA_ROOT3 = '<?MERKUR_DATA_ROOT?>.2.<?SYSTEM_STATUS_MARKER?>'
+
+
+[AppConfig]
+logile_name = 'merkur.log'
+logging_level = 'DEBUG'
+
+
+[ResearchData]
+USStockMarket_ActiveSymbols = '<?DROPBOX?>/AppData/merkur/USStockMarket_ActiveSymbols'
+
+
+[Output]
+logging_path = '<?MERKUR_DATA_ROOT?>/logging/'
+reporting_path = '<?MERKUR_DATA_ROOT?>/reports/'
+
+
+[TransactionDataPaths]
+instrument_static_file = '<?DROPBOX?>/Arthur.Personal/Acccounting/Investment/Instrument-Static.xlsx'
+robinhood_transaction_file = '<?DROPBOX?>/Arthur.Personal/Acccounting/Investment/RobinHood/Robin Hood Transactions.xlsx'
+coinbase_transaction_path = '<?DROPBOX?>/Arthur.Personal/Acccounting/Investment/Coinbase/ImportFile/'
+fidelity_vested_bk_stock_file = '<?DROPBOX?>/Arthur.Personal/Acccounting/Investment/Fidelity/Vested BKStockTransactions.xlsx'
+tdameritrade_tradefile = '<?DROPBOX?>/Arthur.Personal/Acccounting/Investment/TDAmeriTrade/transactions.csv'
+
+[EODDATA]
+eoddata_ftp_credentials_file = '<?DROPBOX?>/AppData/merkur/eoddata_ftp_authentication.json'
+eoddata_download_path = '<?MERKUR_DATA_ROOT?>/MERKUR-DATA/EODDATA/EOD-DATA-DOWNLOAD/'
+eoddata_timeseries_path = '<?MERKUR_DATA_ROOT?>/MERKUR-DATA/EODDATA/EOD-DATA-TIMESERIES-STATS'
+
+
+[POLYGON]
+polygon_api_key_file = '<?DROPBOX?>/AppData/Polygon/app_keys.json'
+polygon_download_path = '<?MERKUR_DATA_ROOT?>/MERKUR-DATA/POLYGON/RAW_DOWNLOAD/'
+polygon_timeseries_path = '<?MERKUR_DATA_ROOT?>/MERKUR-DATA/POLYGON/TIMESERIES-STATS/'
+polygon_intraday_download_path = '<?MERKUR_DATA_ROOT?>/MERKUR-DATA/POLYGON/RAW_DOWNLOAD_INTRADAY'
+polygon_intraday_download_report_path = '<?MERKUR_DATA_ROOT?>/MERKUR-DATA/POLYGON/RAW_DOWNLOAD_INTRADAY_REPORT'
+
+
+
+
+
+
+
+
