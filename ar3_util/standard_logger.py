@@ -2,6 +2,7 @@
 import logging.handlers
 import platform
 import sys
+from ar3_util.os_detector import is_linux, is_windows, os_name
 
 def logging_level_string_to_level(logging_level_as_str:str):
   nameToLevel = {
@@ -25,14 +26,16 @@ def apply_logger_handler(screenoutput:bool, logger_name:str, logfilename:str, lo
 
   fulllogfilename = logfilename
 
-  if platform.system() == 'Windows':
+  if is_windows():
     filehandler = logging.FileHandler(fulllogfilename, mode='w')
-  else:
+  elif is_linux():
     filehandler = logging.handlers. \
       RotatingFileHandler(filename=fulllogfilename,
                           mode='a',
                           maxBytes=300 * 1024 * 1024,
                           backupCount=100)
+  else:
+    raise RuntimeError(f'Unknown OS {os_name()}')
   generalformatter = logging.Formatter(
     '%(asctime)s [%(levelname)s:%(name)s] %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
   filehandler.setFormatter(generalformatter)

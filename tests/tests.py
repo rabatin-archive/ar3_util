@@ -10,10 +10,20 @@ import logging
 from ar3_util.standard_logger import logging_level_string_to_level, apply_logger_handler
 from ar3_util.keydb import KeyDB
 from ar3_util.dated_directories import DatedDirectories
+from ar3_util.os_detector import is_windows, is_linux
 # from tempfile import gettempdir
 
 TMP_PATH = Path('__tmp__')
 
+
+class OSDetectorTest(unittest.TestCase):
+
+  def test_osdector(self):
+    options = [
+      int(is_windows()),
+      int(is_linux())
+    ]
+    self.assertEqual(sum(options), 1)
 
 class KeyDBTestCase(unittest.TestCase):
 

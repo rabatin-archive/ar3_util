@@ -3,7 +3,7 @@ import os
 import toml
 import json
 import platform
-
+from ar3_util.os_detector import is_linux, is_windows, os_name
 
 class TOMLParser:
 
@@ -28,12 +28,12 @@ class TOMLParser:
 
   @staticmethod
   def _find_dropbox_root() -> Path:
-    if platform.uname().system == 'Linux':
+    if is_linux():
       dropbox_spectfile = Path('~/.dropbox/info.json').expanduser()
-    elif platform.uname().system == 'Windows':
+    elif is_windows():
       dropbox_spectfile = TOMLParser._get_windows_dropboox_root()
     else:
-      raise RuntimeError(f'Dropbox root config not implemented for OS {platform.uname().system}')
+      raise RuntimeError(f'Dropbox root config not implemented for OS {os_name()}')
     with open(dropbox_spectfile, 'r') as f:
       dropbox_config = json.load(f)
     return Path(dropbox_config['personal']['path'])
