@@ -93,7 +93,7 @@ class TOMLParser:
 
 
 if __name__ == '__main__':
-  tmlfle = TOMLParser(Path('merkur_global_config.toml'))
+  tmlfle = TOMLParser(Path('../tests/data/merkur_global_config.toml'))
   # print(json.dumps(tmlfle.parse(),indent=2))
   # tmlfle.dump(Path('/home/arthur/aa.toml'))
   print(tmlfle.dumps())

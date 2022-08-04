@@ -2,6 +2,8 @@ from pathlib import Path, PosixPath, WindowsPath
 
 import datetime
 import json
+from typing import List, Dict
+
 
 class ComplexEncoder(json.JSONEncoder):
   def default(self, obj):
@@ -15,55 +17,6 @@ class ComplexEncoder(json.JSONEncoder):
       return obj.isoformat()
     return json.JSONEncoder.default(self, obj)
 
-def dated_dir_is_closed(pathname:Path) -> bool:
-  control_filename = pathname / DatedDirectories.DIRINFO_FILENAME
-  if not control_filename.is_file():
-    raise RuntimeError(f'Expected DateDirectory control file in {pathname}')
-  with open(control_filename, 'r') as f:
-    controldata = json.load(f)
-  return controldata['is_complete']
-
-def set_dir_to_open(pathname:Path, comment:str) -> None:
-  control_filename = pathname / DatedDirectories.DIRINFO_FILENAME
-  if is_dated_dir(pathname):
-    with open(control_filename, 'r') as f:
-      controldata = json.load(f)
-    controldata['is_complete'] = False
-    controldata['comment'] = comment
-  else:
-    controldata = {
-      'info': 'This is a managed Data Directory',
-      'comment': 'There was no create event for this path. Ignore the create Timestamp.',
-      'created_date': datetime.datetime.now().isoformat(),
-      'comment':comment,
-      'is_complete': False
-    }
-  with open(control_filename, 'w') as f:
-    json.dump(controldata, f, indent=2, cls=ComplexEncoder)
-
-
-
-def is_dated_dir(pathname:Path):
-  control_filename = pathname / DatedDirectories.DIRINFO_FILENAME
-  is_dd=False
-  if control_filename.is_file():
-    is_dd=True
-  return is_dd
-
-
-def is_dated_dir_and_closed(pathname:Path):
-  if not is_dated_dir(pathname):
-    return False
-  if not dated_dir_is_closed(pathname):
-    return False
-  return True
-
-
-def sort_dd_paths_by_date(dd_pathlist:list):
-  dd_pathlist.sort(key= lambda x: DatedDirectories.string_to_datetime(str(x.name)))
-  return dd_pathlist
-
-
 
 class DatedDirectories:
   DIRINFO_FILENAME = '__dirinfo__.json'
@@ -76,29 +29,30 @@ class DatedDirectories:
       raise RuntimeError(f'Not a valid directory: {self.rootpath}')
 
   @staticmethod
-  def dated_to_string(dt: datetime.datetime):
-    return dt.now().isoformat(sep='_').replace(':', 'x').replace('.', 'X')
+  def datetime_to_pathname(dt: datetime.datetime) -> str:
+    return 'DD_' + dt.isoformat(sep='_').replace(':', 'x').replace('.', 'X')
 
   @staticmethod
-  def string_to_datetime(datetimestring: str):
+  def pathname_extract_datetime(datetimestring: str) -> datetime.datetime:
     return datetime.datetime.fromisoformat(datetimestring[3:].replace('x', ':').replace('X', '.'))
 
-  def get_paths(self):
+  def get_paths(self) -> List[Path]:
     paths = []
     for d in self.rootpath.iterdir():
       if d.is_dir():
         if d.name.startswith('DD_'):
           paths.append(d)
+    paths.sort(key=lambda x: DatedDirectories.pathname_extract_datetime(str(x.name)))
     return paths
 
-  def get_newest(self):
+  def get_newest(self) -> Dict:
     paths = {}
     cnt = 0
     for d in self.rootpath.iterdir():
       if d.is_dir():
         if d.name.startswith('DD_'):
           cnt += 1
-          paths[DatedDirectories.string_to_datetime(d.name)] = d
+          paths[DatedDirectories.pathname_extract_datetime(d.name)] = d
     if len(paths) == 0:
       return {
         'path_count': 0
@@ -111,7 +65,7 @@ class DatedDirectories:
     }
 
   @staticmethod
-  def close_datadir(datapath: Path):
+  def close_datadir(datapath: Path) -> None:
     dirinfofile = Path(datapath) / DatedDirectories.DIRINFO_FILENAME
     if dirinfofile.is_file():
       with open(dirinfofile, 'r') as f:
@@ -128,10 +82,10 @@ class DatedDirectories:
     with open(dirinfofile, 'w') as f:
       json.dump(dirinfo, f, indent=2)
 
-  def create_dated(self, use_datetime: datetime.datetime = None):
+  def create_dated(self, use_datetime: datetime.datetime = None) -> Path:
     if not use_datetime:
       use_datetime = datetime.datetime.now()
-    pathname = 'DD_' + DatedDirectories.dated_to_string(use_datetime)
+    pathname = DatedDirectories.datetime_to_pathname(use_datetime)
     path_to_create = self.rootpath / pathname
     path_to_create.mkdir(parents=False, exist_ok=False)
 
@@ -145,3 +99,50 @@ class DatedDirectories:
       json.dump(dirinfo, f, indent=2)
 
     return path_to_create
+
+
+
+  @staticmethod
+  def dated_dir_is_closed(pathname:Path) -> bool:
+    control_filename = pathname / DatedDirectories.DIRINFO_FILENAME
+    if not control_filename.is_file():
+      raise RuntimeError(f'Expected DateDirectory control file in {pathname}')
+    with open(control_filename, 'r') as f:
+      controldata = json.load(f)
+    return controldata['is_complete']
+
+  @staticmethod
+  def set_dir_to_open(pathname:Path, comment:str) -> None:
+    control_filename = pathname / DatedDirectories.DIRINFO_FILENAME
+    if DatedDirectories.is_dated_dir(pathname):
+      with open(control_filename, 'r') as f:
+        controldata = json.load(f)
+      controldata['is_complete'] = False
+      controldata['comment'] = comment
+    else:
+      controldata = {
+        'info': 'This is a managed Data Directory',
+        'created_date': datetime.datetime.now().isoformat(),
+        'comment':comment,
+        'is_complete': False
+      }
+    with open(control_filename, 'w') as f:
+      json.dump(controldata, f, indent=2, cls=ComplexEncoder)
+
+  @staticmethod
+  def is_dated_dir(pathname:Path) -> bool:
+    control_filename = pathname / DatedDirectories.DIRINFO_FILENAME
+    is_dd=False
+    if control_filename.is_file():
+      is_dd=True
+    return is_dd
+
+  @staticmethod
+  def is_dated_dir_and_closed(pathname:Path) -> bool:
+    if not DatedDirectories.is_dated_dir(pathname):
+      return False
+    if not DatedDirectories.dated_dir_is_closed(pathname):
+      return False
+    return True
+
+
