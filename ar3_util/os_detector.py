@@ -1,3 +1,13 @@
+# ########################################################################
+# (C) Arthur Rabatin - All Rights Reserved. www.rabatin.com
+# See LICENSE.txt for License Information
+# #########################################################################
+
+"""
+Provides helper functions to safely cehck with operating system the script is running in
+Primary used to distinguish between general Windows and generic Linux
+"""
+
 import platform
 
 

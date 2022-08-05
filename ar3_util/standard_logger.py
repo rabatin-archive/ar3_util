@@ -1,11 +1,19 @@
+# ########################################################################
+# (C) Arthur Rabatin - All Rights Reserved. www.rabatin.com
+# See LICENSE.txt for License Information
+# #########################################################################
+
+"""
+Provides standardised logger format creation with file rotation where available by the OS
+"""
+
 
 import logging.handlers
-import platform
 import sys
 from ar3_util.os_detector import is_linux, is_windows, os_name
 
 def logging_level_string_to_level(logging_level_as_str:str):
-  nameToLevel = {
+  name_to_level = {
     'CRITICAL': logging.CRITICAL,
     'FATAL': logging.FATAL,
     'ERROR': logging.ERROR,
@@ -15,9 +23,9 @@ def logging_level_string_to_level(logging_level_as_str:str):
     'DEBUG': logging.DEBUG,
     'NOTSET': logging.NOTSET
   }
-  if logging_level_as_str not in nameToLevel:
+  if logging_level_as_str not in name_to_level:
     raise ValueError(f'Invalid logging level code: {logging_level_as_str}')
-  return nameToLevel[logging_level_as_str]
+  return name_to_level[logging_level_as_str]
 
 
 def apply_logger_handler(screenoutput:bool, logger_name:str, logfilename:str, logging_level:int = logging.DEBUG):

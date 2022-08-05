@@ -1,24 +1,41 @@
+# ########################################################################
+# (C) Arthur Rabatin - All Rights Reserved. www.rabatin.com
+# See LICENSE.txt for License Information
+# #########################################################################
 
+"""
+Provides a simple Key-Value database based on SQLite where every key is a string and every value can be
+any structured value.
+Focus is on ease of use and not performance
+"""
 
-import json
-import pickle
 import sqlite3
 from pathlib import Path
 
+
 class KeyDB:
+  """ Simple, SQLite based Key/Value database with a focus on ease of use
+
+  Use with the context manager
+  with KeyDB(sqlite_filename, auto_commit=False) as kdb:
+
+    kdb.store('key1', json.dumps(somedict))
+    kdb.store('key2', pickle.dumps(somedict))
+
+  """
 
   @staticmethod
-  def create_new_db(filename: Path):
+  def create_new_db(filename: Path) -> None:
     con = sqlite3.connect(filename)
     cur = con.cursor()
     cur.execute('''CREATE TABLE DATA(record_key TEXT UNIQUE, record_value BLOB)''')
     con.commit()
-    con.close
+    con.close()
 
-  def __init__(self, filename: Path, auto_commit:bool):
+  def __init__(self, filename: Path, auto_commit: bool):
     self.filename = filename
     self.con = None
-    self.commitonclose=False
+    self.commitonclose = False
     self.auto_commit = auto_commit
 
   def __enter__(self):
@@ -29,7 +46,6 @@ class KeyDB:
       raise RuntimeError(f'Failed to create file of name {self.filename}')
     self.open()
     return self
-
 
   def __exit__(self, exc_type, exc_value, exc_traceback):
     self.close()
@@ -73,18 +89,15 @@ class KeyDB:
       resultset.append(row[0])
     return resultset
 
-
-  def load(self, key:str):
+  def load(self, key: str):
     if not isinstance(key, str):
-        raise RuntimeError(f'Key must be of type str, not {type(key)}: {key}')
+      raise RuntimeError(f'Key must be of type str, not {type(key)}: {key}')
     cur = self.con.cursor()
     cur.execute('SELECT record_key, record_value FROM DATA WHERE record_key=:r_key', {'r_key': key})
     select_result = cur.fetchone()
     if select_result:
       return {
-        select_result[0]:select_result[1]
+        select_result[0]: select_result[1]
       }
     else:
       return {}
-
-

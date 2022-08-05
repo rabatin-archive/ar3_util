@@ -1,3 +1,9 @@
+# ########################################################################
+# (C) Arthur Rabatin - All Rights Reserved. www.rabatin.com
+# See LICENSE.txt for License Information
+# #########################################################################
+
+
 [build-system]
 requires = ["setuptools>=42"]
 build-backend = "setuptools.build_meta"

@@ -1,11 +1,31 @@
+# ########################################################################
+# (C) Arthur Rabatin - All Rights Reserved. www.rabatin.com
+# See LICENSE.txt for License Information
+# #########################################################################
+
+"""
+Simple TOML dictionary parser that provides for variable interpolation and interpolation of a DROPBOX keyword
+"""
+
 from pathlib import Path
 import os
 import toml
 import json
-import platform
 from ar3_util.os_detector import is_linux, is_windows, os_name
 
 class TOMLParser:
+  """
+  Simple TOML dictionary parser that provides for variable interpolation and interpolation of a DROPBOX keyword
+  to insert host/user account specific Dropbox directories
+  For example
+  my_special_directory = '/mnt/special'
+  my_other_directory = '<?my_special_directory?>/other/dir'
+  This parser will interpolate my_other_directory to be  '/mnt/special/other/dir'
+  Any combination of such variables is allowed (it will parse recursively until all variables are interpolated).
+
+  The special variable <#DROPBOX#> will be interpreted to mean a private Dropbox account and will be replaced with
+  the local Dropbox location. If no Dropbox is installed, it will throw an exception
+  """
 
   DROPBOX_MARKER = '<#DROPBOX#>'
   LEFT_MARKER = '<?'
@@ -14,7 +34,7 @@ class TOMLParser:
   def __init__(self, toml_file:Path):
     self.vars = {}
     self.cnt = 0
-    with open(toml_file, 'r') as f:
+    with open(toml_file, 'r', encoding='utf-8') as f:
       self.tomldata = toml.load(f)
     self.parsed_dict_cache = None
 
@@ -34,16 +54,13 @@ class TOMLParser:
       dropbox_spectfile = TOMLParser._get_windows_dropboox_root()
     else:
       raise RuntimeError(f'Dropbox root config not implemented for OS {os_name()}')
-    with open(dropbox_spectfile, 'r') as f:
+    with open(dropbox_spectfile, 'r', encoding='utf-8') as f:
       dropbox_config = json.load(f)
     return Path(dropbox_config['personal']['path'])
 
   @staticmethod
   def has_var(s: str) -> bool:
-    if TOMLParser.LEFT_MARKER in s and TOMLParser.RIGHT_MARKER in s:
-      return True
-    else:
-      return False
+    return TOMLParser.LEFT_MARKER in s and TOMLParser.RIGHT_MARKER in s
 
   def parse(self):
     if self.parsed_dict_cache is None:
@@ -54,7 +71,7 @@ class TOMLParser:
     if not exist_ok:
       if filename.is_file():
         raise RuntimeError(f'Output file already exists {filename}')
-    with open(filename, 'w') as f:
+    with open(filename, 'w', encoding='utf-8') as f:
       toml.dump(self.parse(), f)
 
   def dumps(self):
@@ -62,11 +79,11 @@ class TOMLParser:
 
   def _iterative_parse(self, d_:dict):
     self.cnt = 99
-    D= {}
+    new_dict = {}
     while self.cnt != 0:
       self.cnt = 0
-      D = self._traverse(d_)
-    return D
+      new_dict = self._traverse(d_)
+    return new_dict
 
   def _traverse(self, d_:dict):
     d = d_.copy()

@@ -1,3 +1,12 @@
+# ########################################################################
+# (C) Arthur Rabatin - All Rights Reserved. www.rabatin.com
+# See LICENSE.txt for License Information
+# #########################################################################
+
+"""
+Unit Tests for the library
+"""
+
 import datetime
 import random
 import pickle
@@ -26,6 +35,9 @@ class OSDetectorTest(unittest.TestCase):
     self.assertEqual(sum(options), 1)
 
 class KeyDBTestCase(unittest.TestCase):
+  """
+  Tests for KeyDB`
+  """
 
   def setUp(self):
     TMP_PATH.mkdir(exist_ok=True)
@@ -44,8 +56,8 @@ class KeyDBTestCase(unittest.TestCase):
 
   def test_test1a(self):
     for auto_commit in [True, False]:
-      T = KeyDBTestCase.db_name()
-      with KeyDB(T, auto_commit=auto_commit) as kdb:
+      keydb_filename = KeyDBTestCase.db_name()
+      with KeyDB(keydb_filename, auto_commit=auto_commit) as kdb:
         kdb.store('a', json.dumps(KeyDBTestCase.test_data))
         kdb.store('b', pickle.dumps(KeyDBTestCase.test_data))
         data = kdb.load_all_data()
@@ -55,6 +67,9 @@ class KeyDBTestCase(unittest.TestCase):
         self.assertDictEqual(KeyDBTestCase.test_data, datavalue_b)
 
 class DatedDirTester(unittest.TestCase):
+  """
+  DatedDir test cases
+  """
 
   def setUp(self):
     TMP_PATH.mkdir(exist_ok=True)
@@ -115,10 +130,10 @@ class TOMLParserTest(unittest.TestCase):
   def test_parsing(self):
     tmlfle = TOMLParser(TOMLParserTest.TESTTOML)
     s = tmlfle.dumps()
-    with open('__tmp__/s.toml', 'w') as f:
+    with open('__tmp__/s.toml', 'w', encoding='utf-8') as f:
       f.write(s)
     tmlfle.dump(Path('__tmp__/ss.toml'), exist_ok=True)
-    with open('__tmp__/s.toml', 'r') as f:
+    with open('__tmp__/s.toml', 'r', encoding='utf-8') as f:
       rl = f.readlines()
     for l in rl:
       self.assertFalse(TOMLParser.DROPBOX_MARKER in l)
@@ -127,6 +142,9 @@ class TOMLParserTest(unittest.TestCase):
 
 
 class StandardLogger(unittest.TestCase):
+  """
+  Standard Logger Test Cases
+  """
 
   def setUp(self):
     TMP_PATH.mkdir(exist_ok=True)
@@ -141,11 +159,12 @@ class StandardLogger(unittest.TestCase):
     loggername = f'__{s}__'
     if logifle.is_file():
       logifle.unlink()
-    apply_logger_handler(screenoutput=False, logger_name=loggername, logfilename= str(logifle), logging_level = logging.DEBUG)
+    apply_logger_handler(screenoutput=False, logger_name=loggername, logfilename= str(logifle),
+                         logging_level = logging.DEBUG)
     testlog = logging.getLogger(loggername + '.TEST')
     testlog.debug(s)
     comp = f'[DEBUG:{loggername}.TEST] {s}'
-    with open(logifle, 'r') as f:
+    with open(logifle, 'r', encoding='utf-8') as f:
       rl = f.readlines()
     self.assertTrue(comp in rl[0])
 
