@@ -13,7 +13,7 @@ sys.path.insert(0, os.path.abspath('..'))
 project = 'AR3 Util'
 copyright = '2022, Arthur Rabatin'
 author = 'Arthur Rabatin'
-release = '0.05'
+release = '0.5'
 
 # -- General configuration ---------------------------------------------------
 extensions = [
