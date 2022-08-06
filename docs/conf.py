@@ -3,17 +3,23 @@
 # See LICENSE.txt for License Information
 # #########################################################################
 
+from pathlib import Path
+
 # -- Path setup --------------------------------------------------------------
 import os
 import sys
 sys.path.insert(0, os.path.abspath('..'))
 
 
+ar3_version = os.getenv('__AR3__BUILD_VERSION__')
+ar3_author = os.getenv('__AR3__BUILD_AUTHOR__')
+
+
 # -- Project information -----------------------------------------------------
 project = 'AR3 Util'
 copyright = '2022, Arthur Rabatin'
-author = 'Arthur Rabatin'
-release = '0.5'
+author = ar3_version
+release = ar3_author
 
 # -- General configuration ---------------------------------------------------
 extensions = [

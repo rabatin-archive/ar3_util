@@ -14,12 +14,12 @@ import json
 import unittest
 import uuid
 from pathlib  import Path
-from ar3_util.toml_parser import TOMLParser
+from ar3_util.src.toml_parser import TOMLParser
 import logging
-from ar3_util.standard_logger import logging_level_string_to_level, apply_logger_handler
-from ar3_util.keydb import KeyDB
-from ar3_util.dated_directories import DatedDirectories
-from ar3_util.os_detector import is_windows, is_linux
+from ar3_util.src.standard_logger import logging_level_string_to_level, apply_logger_handler
+from ar3_util.src.keydb import KeyDB
+from ar3_util.src.dated_directories import DatedDirectories
+from ar3_util.src.os_detector import is_windows, is_linux
 # from tempfile import gettempdir
 
 TMP_PATH = Path('__tmp__')

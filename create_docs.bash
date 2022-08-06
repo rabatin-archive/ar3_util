@@ -4,11 +4,10 @@
 # See LICENSE.txt for License Information
 # #########################################################################
 
-
-if [ -f "setup.py" ]; then
-    echo "About to update requirements.txt and binary distribution"
+if [ -f "docs/conf.py" ]; then
+    echo "About to rebuild documentation"
 else
-    echo "Must be called from the directory where setup.py is located"
+    echo "Must be called from the directory where docs is located"
     echo "Exiting"
     exit 1
 fi
@@ -17,10 +16,11 @@ source version_info.bash
 
 set_version_info
 
-rm -rf dist
-rm -rf ar3_util.egg-info
-pip freeze > requirements.txt
-python3 -m pip install --upgrade build
-python3 -m build
+rm -rf docs/ar3_util.rst
+rm -rf docs/modules.rst
+rm -rf docs/_build
+sphinx-apidoc -o docs ar3_util
+cd docs
+make html
 
 remove_version_info

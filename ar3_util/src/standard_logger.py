@@ -10,7 +10,7 @@ Provides standardised logger format creation with file rotation where available 
 
 import logging.handlers
 import sys
-from ar3_util.os_detector import is_linux, is_windows, os_name
+from ar3_util.src.os_detector import is_linux, is_windows, os_name
 
 def logging_level_string_to_level(logging_level_as_str:str):
   name_to_level = {
