@@ -93,6 +93,8 @@ class TOMLParser:
         if TOMLParser.has_var(v):
           s = v
           for kk, vv in self.vars.items():
+            if isinstance(vv, bool):
+              print('a')
             s = s.replace(kk, vv)
           new_dict[k] = s
           if TOMLParser.has_var(s):
@@ -104,8 +106,12 @@ class TOMLParser:
             v = v.replace(TOMLParser.DROPBOX_MARKER, str(TOMLParser._find_dropbox_root()))
           new_dict[k] = v
           self.vars[TOMLParser.LEFT_MARKER + k + TOMLParser.RIGHT_MARKER] = v
-      else:
+      elif isinstance(v, dict):
         new_dict[k] = self._traverse(v)
+      else:
+        # print('*'*50, k, v)
+        new_dict[k] = v
+        # self.vars[TOMLParser.LEFT_MARKER + k + TOMLParser.RIGHT_MARKER] = v
     return new_dict
 
 

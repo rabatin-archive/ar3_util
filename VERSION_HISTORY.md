@@ -1,6 +1,9 @@
 # Version History - AR3 UTILS
 ***
 
+## Version 0.6 (Aug 4 2022)
+- Fixed a bug im TOML parser - it did not work with non string values. Now it does. Added unit tests to prove/
+
 ## Version 0.5 (Aug 4 2022)
 - Added TOML Parser as Feature
 - Added OS Detector as Feature

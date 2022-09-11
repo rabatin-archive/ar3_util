@@ -123,6 +123,7 @@ class DatedDirTester(unittest.TestCase):
 class TOMLParserTest(unittest.TestCase):
 
   TESTTOML = Path('data/merkur_global_config.toml')
+  TEST2TOML = Path('data/sample_toml_from_website.toml')
 
   def setUp(self):
     TMP_PATH.mkdir(exist_ok=True)
@@ -139,6 +140,16 @@ class TOMLParserTest(unittest.TestCase):
       self.assertFalse(TOMLParser.DROPBOX_MARKER in l)
       self.assertFalse(TOMLParser.LEFT_MARKER in l)
       self.assertFalse(TOMLParser.RIGHT_MARKER in l)
+
+    parsed_toml = TOMLParser(TOMLParserTest.TESTTOML).parse()
+    self.assertEqual(10, parsed_toml['AppConfig']['NUMBER_VAL'])
+    self.assertEqual(True, parsed_toml['AppConfig']['BOOLEAN_VAL'])
+
+    parsed_toml = TOMLParser(TOMLParserTest.TEST2TOML).parse()
+    self.assertEqual(datetime.datetime(1979, 5, 27).date(), parsed_toml['owner']['dob'])
+
+
+
 
 
 class StandardLogger(unittest.TestCase):
@@ -167,6 +178,8 @@ class StandardLogger(unittest.TestCase):
     with open(logifle, 'r', encoding='utf-8') as f:
       rl = f.readlines()
     self.assertTrue(comp in rl[0])
+
+
 
 
 
