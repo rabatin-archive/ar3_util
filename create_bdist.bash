@@ -15,7 +15,9 @@ fi
 
 
 pip freeze > requirements.txt
+
+export PYTHONPATH=.
 python3 -m pip install --upgrade build
-python3 -m python3 setup.py bdist_wheel
+python3 -m setup bdist_wheel
 
 
