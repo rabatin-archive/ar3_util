@@ -8,7 +8,7 @@ from setuptools import setup
 
 setup(
   name='ar3_util',
-  version='0.7',
+  version='0.8',
   packages=['tests', 'ar3_util'],
   url='www.rabatin.com',
   license='MIT',

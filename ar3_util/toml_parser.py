@@ -57,7 +57,7 @@ class TOMLParser:
     with open(dropbox_spectfile, 'r', encoding='utf-8') as f:
       dropbox_config = json.load(f)
     if 'business' in dropbox_config:
-      return Path(dropbox_config['business']['path'])
+      return Path(dropbox_config['business']['root_path'])
     else:
       return Path(dropbox_config['personal']['path'])
 

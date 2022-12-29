@@ -1,6 +1,10 @@
 # Version History - AR3 UTILS
 ***
 
+## Version 0.8 (Dec 28 2022)
+- Changed Dropbox behaviour to use root path for business accounts
+
+
 ## Version 0.7 (Dec 28 2022)
 - Dropbox works with business accounts now. First checks if there is a business account, then it checks for a personl account
 
