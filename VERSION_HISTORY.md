@@ -1,6 +1,10 @@
 # Version History - AR3 UTILS
 ***
 
+## Version 0.7 (Dec 28 2022)
+- Dropbox works with business accounts now. First checks if there is a business account, then it checks for a personl account
+
+
 ## Version 0.6 (Aug 4 2022)
 - Fixed a bug im TOML parser - it did not work with non string values. Now it does. Added unit tests to prove/
 
@@ -19,6 +23,8 @@
 - Added a version history file (this file)
 
 ***
+
+
 
 
 

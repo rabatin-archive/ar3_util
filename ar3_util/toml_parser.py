@@ -56,7 +56,10 @@ class TOMLParser:
       raise RuntimeError(f'Dropbox root config not implemented for OS {os_name()}')
     with open(dropbox_spectfile, 'r', encoding='utf-8') as f:
       dropbox_config = json.load(f)
-    return Path(dropbox_config['personal']['path'])
+    if 'business' in dropbox_config:
+      return Path(dropbox_config['business']['path'])
+    else:
+      return Path(dropbox_config['personal']['path'])
 
   @staticmethod
   def has_var(s: str) -> bool:
